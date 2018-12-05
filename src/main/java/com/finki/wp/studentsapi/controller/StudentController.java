@@ -6,12 +6,10 @@ import com.finki.wp.studentsapi.model.exceptions.InvalidIndexException;
 import com.finki.wp.studentsapi.model.exceptions.InvalidProgramException;
 import com.finki.wp.studentsapi.model.exceptions.ParametarMissingException;
 import com.finki.wp.studentsapi.service.StudentService;
-import com.finki.wp.studentsapi.service.StudyProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
