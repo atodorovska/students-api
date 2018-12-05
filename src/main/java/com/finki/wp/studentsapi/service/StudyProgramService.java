@@ -26,10 +26,6 @@ public class StudyProgramService {
         return Optional.of(this.studyProgramRepository.findAll());
     }
 
-    public Long getStudyProgramByName(String studyProgram) {
-        return this.studyProgramRepository.findByName(studyProgram).getId();
-    }
-
     public void deleteProgram(Long id) {
         this.studyProgramRepository.deleteById(id);
     }

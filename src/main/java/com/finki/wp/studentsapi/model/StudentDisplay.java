@@ -2,11 +2,8 @@ package com.finki.wp.studentsapi.model;
 
 public class StudentDisplay {
 
-
     private String index;
-
     private String name;
-
     private String lastName;
 
     public StudentDisplay() {

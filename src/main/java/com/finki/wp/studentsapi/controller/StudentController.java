@@ -2,12 +2,17 @@ package com.finki.wp.studentsapi.controller;
 
 import com.finki.wp.studentsapi.model.Student;
 import com.finki.wp.studentsapi.model.StudentDisplay;
+import com.finki.wp.studentsapi.model.exceptions.InvalidIndexException;
+import com.finki.wp.studentsapi.model.exceptions.InvalidProgramException;
+import com.finki.wp.studentsapi.model.exceptions.ParametarMissingException;
 import com.finki.wp.studentsapi.service.StudentService;
 import com.finki.wp.studentsapi.service.StudyProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -16,9 +21,6 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
-
-    @Autowired
-    private StudyProgramService studyProgramService;
 
     public StudentController() {
     }
@@ -39,33 +41,19 @@ public class StudentController {
     }
 
     @PostMapping("/")
-    public ResponseEntity addStudent(@RequestParam String index, @RequestParam String name, @RequestParam String lastName, @RequestParam String studyProgram){
+    public void addStudent(HttpServletResponse response, @RequestParam String index, @RequestParam String name, @RequestParam String lastName, @RequestParam String studyProgram) throws InvalidIndexException, ParametarMissingException, InvalidProgramException {
 
-        if(this.studentService.getStudentByIndex(index).isPresent()){
-            return ResponseEntity.status(201).build();
-        }else if(index == null || name == null || lastName == null || studyProgram == null){
-            return ResponseEntity.status(400).build();
-        }else if(index.length() != 6 || !index.matches("[0-9]+")){
-            return ResponseEntity.status(400).build();
-        }else if(this.studyProgramService.getStudyProgramByName(studyProgram) == null){
-            return ResponseEntity.status(400).build();
+        if(this.studentService.addStudent(index, name, lastName, studyProgram)) {
+            response.setStatus(200);
         }else{
-            Long id = this.studyProgramService.getStudyProgramByName(studyProgram);
-
-            this.studentService.addStudent(new Student(index, name, lastName, id));
-            return ResponseEntity.ok().build();
+            response.setHeader("Location", "localhost:8080/students/{index}");
+            response.setStatus(201);
         }
     }
 
     @PatchMapping("/{index}")
     public ResponseEntity alterStudent(@PathVariable String index, @RequestParam String name, @RequestParam String lastName, @RequestParam String studyProgram){
-        if(this.studentService.getStudentByIndex(index).isPresent()){
-
-            Long id = this.studyProgramService.getStudyProgramByName(studyProgram);
-
-            this.studentService.alterStudent(index, name, lastName, id);
-            return ResponseEntity.ok().build();
-        }
+        if(this.studentService.alterStudent(index, name, lastName, studyProgram)) return ResponseEntity.ok().build();
         return ResponseEntity.status(404).build();
 
     }
