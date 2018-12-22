@@ -5,7 +5,7 @@ import com.finki.wp.studentsapi.model.StudentDisplay;
 import com.finki.wp.studentsapi.model.exceptions.InvalidIndexException;
 import com.finki.wp.studentsapi.model.exceptions.InvalidProgramException;
 import com.finki.wp.studentsapi.model.exceptions.ParametarMissingException;
-import com.finki.wp.studentsapi.service.StudentService;
+import com.finki.wp.studentsapi.service.implementation.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,30 +18,30 @@ import java.util.List;
 public class StudentController {
 
     @Autowired
-    private StudentService studentService;
+    private StudentServiceImpl studentServiceImpl;
 
     public StudentController() {
     }
 
     @GetMapping("/")
     public ResponseEntity<List<StudentDisplay>> getAllStudents(){
-        return this.studentService.getAllStudents().map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return this.studentServiceImpl.getAllStudents().map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{index}")
     public ResponseEntity<Student> getStudentByIndex(@PathVariable String index){
-        return this.studentService.getStudentByIndex(index).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return this.studentServiceImpl.getStudentByIndex(index).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by_study_program/{id}")
     public ResponseEntity<List<Student>> getStudentsByStudyProgramId(@PathVariable Long id){
-        return this.studentService.getStudentsByStudyProgramId(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return this.studentServiceImpl.getStudentsByStudyProgramId(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
     public void addStudent(HttpServletResponse response, @RequestParam String index, @RequestParam String name, @RequestParam String lastName, @RequestParam String studyProgram) throws InvalidIndexException, ParametarMissingException, InvalidProgramException {
 
-        if(this.studentService.addStudent(index, name, lastName, studyProgram)) {
+        if(this.studentServiceImpl.addStudent(index, name, lastName, studyProgram)) {
             response.setStatus(200);
         }else{
             response.setHeader("Location", "localhost:8080/students/{index}");
@@ -49,17 +49,17 @@ public class StudentController {
         }
     }
 
-    @PatchMapping("/{index}")
+    @PutMapping("/{index}")
     public ResponseEntity alterStudent(@PathVariable String index, @RequestParam String name, @RequestParam String lastName, @RequestParam String studyProgram){
-        if(this.studentService.alterStudent(index, name, lastName, studyProgram)) return ResponseEntity.ok().build();
+        if(this.studentServiceImpl.alterStudent(index, name, lastName, studyProgram)) return ResponseEntity.ok().build();
         return ResponseEntity.status(404).build();
 
     }
 
     @DeleteMapping("/{index}")
     public ResponseEntity deleteStudent(@PathVariable String index){
-        if(this.studentService.getStudentByIndex(index).isPresent()) {
-            this.studentService.deleteStudent(index);
+        if(this.studentServiceImpl.getStudentByIndex(index).isPresent()) {
+            this.studentServiceImpl.deleteStudent(index);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(404).build();
