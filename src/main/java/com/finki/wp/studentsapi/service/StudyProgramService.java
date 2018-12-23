@@ -12,4 +12,8 @@ public interface StudyProgramService {
     Optional<List<StudyProgram>> getAllPrograms();
 
     boolean deleteProgram(Long id);
+
+    Optional<StudyProgram> getProgramById(Long id);
+
+    boolean alterProgram(Long id, String name);
 }

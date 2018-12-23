@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StudentService {
-    
-    Optional<List<StudentDisplay>> getAllStudents();
+
+    Optional<List<Student>> getAllStudents();
 
     boolean addStudent(String index, String name, String lastName, String studyProgram) throws ParametarMissingException, InvalidIndexException, InvalidProgramException;
 

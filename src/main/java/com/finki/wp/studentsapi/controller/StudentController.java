@@ -1,7 +1,6 @@
 package com.finki.wp.studentsapi.controller;
 
 import com.finki.wp.studentsapi.model.Student;
-import com.finki.wp.studentsapi.model.StudentDisplay;
 import com.finki.wp.studentsapi.model.exceptions.InvalidIndexException;
 import com.finki.wp.studentsapi.model.exceptions.InvalidProgramException;
 import com.finki.wp.studentsapi.model.exceptions.ParametarMissingException;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+@CrossOrigin({"*"})
 @RestController
 @RequestMapping("/students")
 public class StudentController {
@@ -24,7 +24,7 @@ public class StudentController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<StudentDisplay>> getAllStudents(){
+    public ResponseEntity<List<Student>> getAllStudents(){
         return this.studentServiceImpl.getAllStudents().map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

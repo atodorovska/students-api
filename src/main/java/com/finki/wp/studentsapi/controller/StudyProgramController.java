@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin({"*"})
 @RestController
 @RequestMapping("/study_programs")
 public class StudyProgramController {
@@ -16,6 +17,11 @@ public class StudyProgramController {
     private StudyProgramServiceImpl studyProgramServiceImpl;
 
     public StudyProgramController() {
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<StudyProgram> getProgramById(@PathVariable Long id){
+        return this.studyProgramServiceImpl.getProgramById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/")
@@ -28,6 +34,13 @@ public class StudyProgramController {
         this.studyProgramServiceImpl.addStudyProgram(name);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity alterProgram(@PathVariable Long id, @RequestParam String name){
+        if(this.studyProgramServiceImpl.alterProgram(id, name)) return ResponseEntity.ok().build();
+        return ResponseEntity.notFound().build();
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteProgram(@PathVariable Long id){
